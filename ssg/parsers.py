@@ -1,12 +1,12 @@
 import shutil
 import sys
+from pathlib import Path
+from typing import List
 
 from docutils.core import publish_parts
 from markdown import markdown
-from ssg.content import Content
 
-from typing import List
-from pathlib import Path
+from ssg.content import Content
 
 
 class Parser:
