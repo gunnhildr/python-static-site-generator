@@ -1,18 +1,27 @@
 from pathlib import Path
-from typing import List
-
-from ssg.parsers import Parse
 
 
 class Site:
-    def __init__(self, source, dest, parsers = None):
+    def __init__(self, source, dest, parsers=None):
         self.source = Path(source)
         self.dest = Path(dest)
-        self.parsers: List[Parse] = parsers
+        self.parsers = parsers or []
 
-    def create_dir(self, path: Path):
+    def create_dir(self, path):
         directory = self.dest / path.relative_to(self.source)
         directory.mkdir(parents=True, exist_ok=True)
+
+    def load_parser(self, extension):
+        for parser in self.parsers:
+            if parser.valid_extension(extension):
+                return parser
+
+    def run_parser(self, path):
+        parser = self.load_parser(path.suffix)
+        if parser is not None:
+            parser.parse(path, self.source, self.dest)
+        else:
+            print("Not Implemented")
 
     def build(self):
         self.dest.mkdir(parents=True, exist_ok=True)
@@ -21,15 +30,3 @@ class Site:
                 self.create_dir(path)
             elif path.is_file():
                 self.run_parser(path)
-
-    def load_parser(self, extension) -> Parse:
-        for parser in self.parsers:
-            if parser.valid_extension(extension):
-                return parser
-
-    def run_parser(self, path: Path):
-        parser = self.load_parser(path.suffix)
-        if parser is not None:
-            parser.parse(path, self.source, self.dest)
-        else:
-            print("Not Implemented")
