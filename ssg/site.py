@@ -33,3 +33,6 @@ class Site:
         if parser:
             parser.parse(path, self.source, self.dest)
 
+        else:
+            raise NotImplementedError
+
