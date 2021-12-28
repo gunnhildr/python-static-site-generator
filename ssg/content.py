@@ -1,5 +1,6 @@
 import re
 from collections.abc import Mapping
+from typing import Any
 
 from yaml import load, FullLoader
 
@@ -9,7 +10,7 @@ class Content(Mapping):
     __regex = re.compile(__delimiter, re.MULTILINE)
 
     @classmethod
-    def load(cls, string):
+    def load(cls, string) -> "Content":
         _, fm, content = cls.__regex.split(string, 2)
         metadata = load(fm, Loader=FullLoader)
         return cls(metadata, content)
@@ -19,11 +20,11 @@ class Content(Mapping):
         self.data["content"] = content
 
     @property
-    def body(self):
+    def body(self) -> Any:
         return self.data["content"]
 
     @property
-    def type(self):
+    def type(self) -> Any:
         return self.data["type"] if "type" in self.data else None
 
     @type.setter
